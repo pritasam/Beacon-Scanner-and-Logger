@@ -1,5 +1,5 @@
 /** Automatically generated file. DO NOT MODIFY */
-package com.radiusnetworks.ibeaconreference;
+package net.jmodwyer.ibeacon.ibeacon;
 
 public final class BuildConfig {
     public final static boolean DEBUG = true;

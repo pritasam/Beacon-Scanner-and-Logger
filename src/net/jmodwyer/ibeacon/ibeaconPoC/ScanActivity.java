@@ -24,7 +24,6 @@ import com.radiusnetworks.ibeacon.IBeaconConsumer;
 import com.radiusnetworks.ibeacon.IBeaconManager;
 import com.radiusnetworks.ibeacon.RangeNotifier;
 import com.radiusnetworks.ibeacon.Region;
-import com.radiusnetworks.ibeaconreference.R;
 
 /**
  * Adapted from original code written by D Young of Radius Networks.

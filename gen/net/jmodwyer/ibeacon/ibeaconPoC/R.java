@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.radiusnetworks.ibeaconreference;
+package net.jmodwyer.ibeacon.ibeaconPoC;
 
 public final class R {
     public static final class attr {
