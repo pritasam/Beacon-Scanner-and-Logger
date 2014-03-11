@@ -1,9 +1,5 @@
 package net.jmodwyer.ibeacon.ibeaconPoC;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -11,7 +7,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
@@ -33,23 +28,22 @@ import com.radiusnetworks.ibeacon.Region;
 public class ScanActivity extends Activity implements IBeaconConsumer {
     
 	protected static final String TAG = "ScanActivity";
-	private final String FILENAME = "ibeacons.txt";
     private final String MODE_SCANNING = "Stop Scanning";
-    private final String MODE_STOPPED = "Start Scanning";
-    
-    private IBeaconManager iBeaconManager = IBeaconManager.getInstanceForApplication(this);
-    private Region region = new Region("myRangingUniqueId", null, null, null);
-    private OutputStreamWriter osw = null;
+    private final String MODE_STOPPED = "Start Scanning";    
+    private FileHelper fileHelper; 
+    private IBeaconManager iBeaconManager;
+    private Region region; 
     private int eventNum = 1;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-    	Log.d(TAG, "oncreate");
         super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_scan);
-		setContentView(R.layout.activity_scan);
-		verifyBluetooth();	
+		verifyBluetooth();
+		iBeaconManager = IBeaconManager.getInstanceForApplication(this);
 		iBeaconManager.bind(this);
+		region = new Region("myRangingUniqueId", null, null, null);
+		fileHelper = new FileHelper(getExternalFilesDir(null));
 		// Initialise scan button.
 		getScanButton().setText(MODE_STOPPED);
     }
@@ -123,7 +117,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
         } catch (RemoteException e) {   
         	// TODO - OK, what now then?
         }	
-		prepareExternalFile();
+		fileHelper.prepareExternalFile();
 	}
 
 	/**
@@ -136,7 +130,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 				// TODO - OK, what now then?
 			}
 		// Flush location details to a file.
-		closeExternalFile();
+		fileHelper.closeExternalFile();
 		// Display file created message.
 		Toast.makeText(getBaseContext(),
 				"File saved to:" + getFilesDir().getAbsolutePath(),
@@ -167,34 +161,14 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 				+ " RSSI: "
 				+ iBeacon.getRssi()
 				+ " Proximity: "
-				+ getProximityString(iBeacon.getProximity())
+				+ BeaconHelper.getProximityString(iBeacon.getProximity())
 				);
 
 		logToDisplay(logString.toString());
 		logString.append("\n");
-		writeToExternalFile(logString.toString(), osw);
+		fileHelper.writeToExternalFile(logString.toString());
 	}
     
-	/**
-	 * Decodes the Radius Networks IBeacon proximity constant passed in and returns an
-	 * appropriate human readable String.
-	 * @param proximity constant expressing proximity from Radius Networks IBeacon class
-	 * @return human readable String representing that proximity
-	 */
-	private String getProximityString(int proximity) {
-		String proximityString;
-		switch (proximity) {
-		case 1 : proximityString = "Immediate";
-		break;
-		case 2 : proximityString = "Near";
-		break;
-		case 3 : proximityString = "Far";
-		break;
-		default: proximityString = "Unknown";
-		}
-		return proximityString;
-	}
-	
 	/**
 	 * 
 	 * @param line
@@ -209,84 +183,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
     	});
     }
     
-    /**
-     * 
-     * @return
-     */
-    public OutputStreamWriter prepareExternalFile() {
-    	
- 		try 
- 		{    
- 			
- 			if (IsExternalStorageAvailableAndWriteable()) {                 
- 				File extStorage = getExternalFilesDir(null);
- 				
- 				File file = new File(extStorage, FILENAME);                                
- 				FileOutputStream fos = new FileOutputStream(file);
- 				osw = new OutputStreamWriter(fos);
- 				               
- 			}
- 		} 
- 		catch (IOException ioe) { 
- 			ioe.printStackTrace(); 
- 		}
- 		
- 		return osw;
- 		
-     }
-     
-    /**
-     * 
-     */
-     public void closeExternalFile() {
-     	try {
-     		osw.close();
-     	} 
-     	catch (IOException ioe) {
-     		ioe.printStackTrace();
-     	}     	
-     }
-     
-     /**
-      * 
-      * @param content
-      * @param osw
-      */
-     public void writeToExternalFile(String content, OutputStreamWriter osw) {
-     	try
-     	{
- 				osw.write(content);
- 				osw.flush();
- 		} 
- 		catch (IOException ioe) { 
- 			ioe.printStackTrace(); 
- 		}
- 	}
-
-    /**
-     *  
-     * @return
-     */
- 	public boolean IsExternalStorageAvailableAndWriteable() {
- 		boolean externalStorageAvailable = false;
- 		boolean externalStorageWriteable = false;
- 		String state = Environment.getExternalStorageState();
-
- 		if (Environment.MEDIA_MOUNTED.equals(state)) {
- 			//---you can read and write the media---
- 			externalStorageAvailable = externalStorageWriteable = true;
- 		} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
- 			//---you can only read the media---
- 			externalStorageAvailable = true;
- 			externalStorageWriteable = false;
- 		} else {
- 			//---you cannot read nor write the media---
- 			externalStorageAvailable = externalStorageWriteable = false;
- 		}
- 		return externalStorageAvailable && externalStorageWriteable;
- 	}
- 	
-	private void verifyBluetooth() {
+ 	private void verifyBluetooth() {
 
 		try {
 			if (!IBeaconManager.getInstanceForApplication(this).checkAvailability()) {
