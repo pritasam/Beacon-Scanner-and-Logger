@@ -2,4 +2,8 @@
 
     <string name="app_name">iBeaconPoC</string>
 
+    <string name="click_the_button_to_start_or_stop_scanning_">Click the button to start or stop scanning.</string>
+    
+    <string name="Settings">Settings</string>
+
 </resources>

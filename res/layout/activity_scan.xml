@@ -11,8 +11,15 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:clickable="false"
+        android:duplicateParentState="false"
         android:ems="10"
-        android:text="Click the button to start or stop scanning." >
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:longClickable="false"
+        android:selectAllOnFocus="false"
+        android:text="@string/click_the_button_to_start_or_stop_scanning_" android:inputType="text">
+
         <requestFocus />
     </EditText>
 
@@ -24,9 +31,14 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/scanButton"
         android:layout_marginTop="17dp"
+        android:clickable="false"
+        android:duplicateParentState="false"
         android:ems="10"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:gravity="left|top"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine"
+        android:longClickable="false" />
 
     <Button
         android:id="@+id/scanButton"

@@ -1,5 +1,9 @@
 package net.jmodwyer.ibeacon.ibeaconPoC;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class BeaconHelper {
 
 	/**
@@ -22,5 +26,14 @@ public class BeaconHelper {
 		return proximityString;
 	}
 	
+	/**
+	 * Get the current date and time formatted as expected by PBS' application.
+	 * @return
+	 */
+	public static String getCurrentTimeStamp() {
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss.SSS", Locale.US);
+	    Date now = new Date();
+	    return sdf.format(now);
+	}
 	
 }

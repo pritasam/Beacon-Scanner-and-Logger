@@ -1,0 +1,43 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Beacon Properties do you want to capture?" >
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="uuid"
+            android:summary="Log the UUID"
+            android:title="UUID" />
+                
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="majorMinor"
+            android:summary="Log the Major and Minor values"
+            android:title="Major Minor" />
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="rssi"
+            android:summary="Log the RSSI value"
+            android:title="RSSI" />
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="proximity"
+            android:summary="Log the Proximity value"
+            android:title="Proximity" />
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="power"
+            android:summary="Log the Power value"
+            android:title="Power" />
+                                                                        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="timestamp"
+            android:summary="Log a Timestamp every time a beacon is detected"
+            android:title="Timestamp" />
+                                        
+    </PreferenceCategory>
+
+</PreferenceScreen>

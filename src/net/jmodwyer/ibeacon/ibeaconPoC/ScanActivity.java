@@ -1,13 +1,20 @@
 package net.jmodwyer.ibeacon.ibeaconPoC;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,13 +40,23 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
     private IBeaconManager iBeaconManager;
     private Region region; 
     private int eventNum = 1;
+   
+    // Preferences - will actually have a boolean value when loaded.
+    private Boolean uuid;
+	private Boolean majorMinor;
+	private Boolean rssi;
+	private Boolean proximity;
+	private Boolean power;
+	private Boolean timestamp;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_scan);
 		verifyBluetooth();
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		iBeaconManager = IBeaconManager.getInstanceForApplication(this);
+		//iBeaconManager.setForegroundScanPeriod(10);
 		iBeaconManager.bind(this);
 		region = new Region("myRangingUniqueId", null, null, null);
 		fileHelper = new FileHelper(getExternalFilesDir(null));
@@ -63,6 +80,13 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
     protected void onResume() {
     	super.onResume();
     	if (iBeaconManager.isBound(this)) iBeaconManager.setBackgroundMode(this, false);    		
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_actions, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -93,10 +117,28 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 	 * start looking for beacons.
 	 */
 	private void startScanning(Button scanButton) {
+		
 		// Set UI elements to the correct state.
 		scanButton.setText(MODE_SCANNING);
 		((EditText)findViewById(R.id.scanText)).setText("");
+		
+		// Reset event counter
+		eventNum = 1;
+		// Get current values for logging preferences
+		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+	    HashMap <String, Object> prefs = new HashMap<String, Object>();
+	    prefs.putAll(sharedPrefs.getAll());
+	    
+	    uuid = (Boolean)prefs.get("uuid");
+		majorMinor = (Boolean)prefs.get("majorMinor");
+		rssi = (Boolean)prefs.get("rssi"); 
+		proximity = (Boolean)prefs.get("proximity");
+		power = (Boolean)prefs.get("power");
+		timestamp = (Boolean)prefs.get("timestamp"); 
+		
 		logToDisplay("*** New Scan ***");
+		
 		//Start scanning again.
         iBeaconManager.setRangeNotifier(new RangeNotifier() {
         	@Override 
@@ -125,9 +167,9 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 	private void stopScanning(Button scanButton) {
 		try {
 			iBeaconManager.stopRangingBeaconsInRegion(region);
-			} catch (RemoteException e) {
+		} catch (RemoteException e) {
 				// TODO - OK, what now then?
-			}
+		}
 		// Flush location details to a file.
 		fileHelper.closeExternalFile();
 		// Display file created message.
@@ -151,18 +193,32 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
      */
 	private void logBeaconData(IBeacon iBeacon) {
 		StringBuffer logString = new StringBuffer();
-		
-		logString.append(eventNum++
-				+ " "
-				+ iBeacon.getMajor() 
-				+ "-" 
-				+ iBeacon.getMinor()
-				+ " RSSI: "
-				+ iBeacon.getRssi()
-				+ " Proximity: "
-				+ BeaconHelper.getProximityString(iBeacon.getProximity())
-				);
+		logString.append(eventNum++ + "");
 
+		if (uuid.booleanValue()) {
+			logString.append(" UUID: " + iBeacon.getProximityUuid());
+		}		
+		
+		if (majorMinor.booleanValue()) {
+			logString.append(" Maj. Mnr.: " + iBeacon.getMajor() + "-" + iBeacon.getMinor());
+		}
+		
+		if (rssi.booleanValue()) {
+			logString.append(" RSSI: " + iBeacon.getRssi());
+		}
+				
+		if (proximity.booleanValue()) {
+			logString.append(" Proximity: " + BeaconHelper.getProximityString(iBeacon.getProximity()));
+		}
+		
+		if (power.booleanValue()) {
+			logString.append(" Power: "+ iBeacon.getTxPower());
+		}
+		
+		if (timestamp.booleanValue()) {
+			logString.append(" Timestamp: " + BeaconHelper.getCurrentTimeStamp());
+		}
+	    
 		logToDisplay(logString.toString());
 		logString.append("\n");
 		fileHelper.writeToExternalFile(logString.toString());
@@ -219,5 +275,19 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		}
 		
 	}	  
+ 	
+ 	// Handle the user selecting "Settings" from the action bar.
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	    	case R.id.Settings:
+	            // Show settings
+	    		Intent i = new Intent(this, AppPreferenceActivity.class);
+	            startActivityForResult(i, 0);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	     }
+	 }
     
 }
