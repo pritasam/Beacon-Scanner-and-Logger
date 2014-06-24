@@ -3,6 +3,7 @@
 	<name>IBeaconPoC</name>
 	<comment></comment>
 	<projects>
+		<project>AndroidIBeaconLibrary</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

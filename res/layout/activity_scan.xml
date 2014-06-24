@@ -18,7 +18,7 @@
         android:focusableInTouchMode="false"
         android:longClickable="false"
         android:selectAllOnFocus="false"
-        android:text="@string/click_the_button_to_start_or_stop_scanning_" android:inputType="text">
+        android:text="@string/click_the_button_to_start_or_stop_scanning" android:inputType="text">
 
         <requestFocus />
     </EditText>

@@ -42,6 +42,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
     private int eventNum = 1;
    
     // Preferences - will actually have a boolean value when loaded.
+    private Boolean index;
     private Boolean uuid;
 	private Boolean majorMinor;
 	private Boolean rssi;
@@ -130,6 +131,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 	    HashMap <String, Object> prefs = new HashMap<String, Object>();
 	    prefs.putAll(sharedPrefs.getAll());
 	    
+	    index = (Boolean)prefs.get("index");
 	    uuid = (Boolean)prefs.get("uuid");
 		majorMinor = (Boolean)prefs.get("majorMinor");
 		rssi = (Boolean)prefs.get("rssi"); 
@@ -193,8 +195,11 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
      */
 	private void logBeaconData(IBeacon iBeacon) {
 		StringBuffer logString = new StringBuffer();
-		logString.append(eventNum++ + "");
 
+		if (index.booleanValue()) {
+			logString.append(eventNum++ + "");
+		}				
+		
 		if (uuid.booleanValue()) {
 			logString.append(" UUID: " + iBeacon.getProximityUuid());
 		}		

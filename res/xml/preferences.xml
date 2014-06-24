@@ -4,6 +4,12 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
+            android:key="index"
+            android:summary="Log a count of beacon pings detected so far"
+            android:title="Row Number" />        
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
             android:key="uuid"
             android:summary="Log the UUID"
             android:title="UUID" />
