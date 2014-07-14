@@ -60,7 +60,9 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		//iBeaconManager.setForegroundScanPeriod(10);
 		iBeaconManager.bind(this);
 		region = new Region("myRangingUniqueId", null, null, null);
-		fileHelper = new FileHelper(getExternalFilesDir(null));
+		//fileHelper = new FileHelper(getExternalFilesDir(null));
+		BeaconScannerApp app = (BeaconScannerApp)this.getApplication();
+		fileHelper = app.getFileHelper();
 		// Initialise scan button.
 		getScanButton().setText(MODE_STOPPED);
     }
@@ -287,9 +289,14 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		switch (item.getItemId()) {
 	    	case R.id.Settings:
 	            // Show settings
-	    		Intent i = new Intent(this, AppPreferenceActivity.class);
-	            startActivityForResult(i, 0);
+	    		Intent api = new Intent(this, AppPreferenceActivity.class);
+	            startActivityForResult(api, 0);
 	            return true;
+	    	case R.id.action_listfiles:
+	    		// Launch list files activity
+	    		Intent fhi = new Intent(this, FileHandlerActivity.class);
+	            startActivity(fhi);
+	            return true;	    			    		
 	        default:
 	            return super.onOptionsItemSelected(item);
 	     }

@@ -7,8 +7,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
 import android.os.Environment;
+import android.text.format.DateFormat;
 
 /**
  * @author justin
@@ -18,7 +20,7 @@ public class FileHelper {
 
 	private OutputStreamWriter osw;
 	private File extStorage;
-	private final String FILENAME = "ibeacons.txt";
+	private final String FILENAME = "beacons";
 	
 	/**
 	 * Initialise extStorage using the reference passed in.
@@ -37,9 +39,10 @@ public class FileHelper {
  		try 
  		{    
  			
- 			if (isExternalStorageAvailableAndWriteable()) {                 
+ 			if (isExternalStorageAvailableAndWriteable()) {
  				
- 				File file = new File(extStorage, FILENAME);                                
+ 				String now = (DateFormat.format("dd-MM-yyyy_HH-mm-ss", new java.util.Date()).toString());
+ 				File file = new File(extStorage, FILENAME + "_" + now);                                
  				FileOutputStream fos = new FileOutputStream(file);
  				osw = new OutputStreamWriter(fos);
  				               
@@ -81,6 +84,21 @@ public class FileHelper {
  		}
  	}
 	
+     /**
+      * List the paths of all files in the app's external storage directory.
+      * @return ArrayList containing all discovered file paths.
+      */
+     public ArrayList<String> listFiles() {
+    	 ArrayList<String> paths = new ArrayList<String>();
+    	 File[] fileList = extStorage.listFiles();
+    	 for (File file : fileList) {
+    	     if (file.isFile()) {
+    	         paths.add(file.getPath());
+    	     }
+    	 }
+    	 return paths;
+     }
+     
      /**
       *  
       * @return

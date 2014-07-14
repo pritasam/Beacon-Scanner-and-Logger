@@ -7,7 +7,7 @@
 
 	<!-- Note that orientation and screenSize are defined in configChanges for the activity defined below,
 	     this is to prevent scanning being stopped when the device is turned on its side. -->
-    <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name">
+    <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:name="net.jmodwyer.ibeacon.ibeaconPoC.BeaconScannerApp">
        
         <activity android:configChanges="orientation|screenSize" android:label="@string/app_name" android:name="net.jmodwyer.ibeacon.ibeaconPoC.ScanActivity">
             <intent-filter>
@@ -21,13 +21,18 @@
 				<action android:name="net.jmodwyer.ibeacon.ibeaconPoC.AppPreferenceActivity"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
-        </activity>
+        </activity>        
+        
+        <activity android:label="@string/app_name" android:name="net.jmodwyer.ibeacon.ibeaconPoC.FileHandlerActivity" android:parentActivityName="net.jmodwyer.ibeacon.ibeaconPoC.ScanActivity">
+        	<!-- Parent activity meta-data to support 4.0 and lower -->
+        	<meta-data android:name="android.support.PARENT_ACTIVITY" android:value="net.jmodwyer.ibeacon.ibeaconPoC.ScanActivity"/>
+    	</activity>
     <service android:enabled="true" android:exported="true" android:isolatedProcess="false" android:label="iBeacon" android:name="com.radiusnetworks.ibeacon.service.IBeaconService">
     </service>
 
     <service android:enabled="true" android:name="com.radiusnetworks.ibeacon.IBeaconIntentProcessor">
-    </service>        
-        
+    </service>
+    	
     </application>
 
 </manifest>

@@ -5,5 +5,7 @@
     <string name="click_the_button_to_start_or_stop_scanning">Click the button to start or stop scanning.</string>
     
     <string name="Settings">Settings</string>
+    
+    <string name="action_listfiles">List files</string>
 
 </resources>

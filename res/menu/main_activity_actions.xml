@@ -1,4 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- List Files - will appear as an action button -->
+    <item android:id="@+id/action_listfiles"
+          android:icon="@drawable/ic_action_copy"
+          android:title="@string/action_listfiles"
+          android:showAsAction="ifRoom" />
     <item android:id="@+id/Settings"
           android:title="@string/Settings"
           android:showAsAction="never"/>
