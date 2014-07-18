@@ -162,7 +162,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		power = (Boolean)prefs.get("power");
 		timestamp = (Boolean)prefs.get("timestamp"); 
 		
-		logToDisplay("*** New Scan ***");
+		logToDisplay("Scanning...");
 		
 		// Initialise scan log
 		logString = new StringBuffer();
@@ -230,36 +230,40 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
      */
 	private void logBeaconData(IBeacon iBeacon) {
 
+		StringBuffer scan = new StringBuffer();
+		
 		if (index.booleanValue()) {
-			logString.append(eventNum++ + "");
+			scan.append(eventNum++ + "");
 		}				
 		
 		if (uuid.booleanValue()) {
-			logString.append(" UUID: " + iBeacon.getProximityUuid());
+			scan.append(" UUID: " + iBeacon.getProximityUuid());
 		}		
 		
 		if (majorMinor.booleanValue()) {
-			logString.append(" Maj. Mnr.: " + iBeacon.getMajor() + "-" + iBeacon.getMinor());
+			scan.append(" Maj. Mnr.: " + iBeacon.getMajor() + "-" + iBeacon.getMinor());
 		}
 		
 		if (rssi.booleanValue()) {
-			logString.append(" RSSI: " + iBeacon.getRssi());
+			scan.append(" RSSI: " + iBeacon.getRssi());
 		}
 				
 		if (proximity.booleanValue()) {
-			logString.append(" Proximity: " + BeaconHelper.getProximityString(iBeacon.getProximity()));
+			scan.append(" Proximity: " + BeaconHelper.getProximityString(iBeacon.getProximity()));
 		}
 		
 		if (power.booleanValue()) {
-			logString.append(" Power: "+ iBeacon.getTxPower());
+			scan.append(" Power: "+ iBeacon.getTxPower());
 		}
 		
 		if (timestamp.booleanValue()) {
-			logString.append(" Timestamp: " + BeaconHelper.getCurrentTimeStamp());
+			scan.append(" Timestamp: " + BeaconHelper.getCurrentTimeStamp());
 		}
 	    
-		logToDisplay(logString.toString());
-		logString.append("\n");
+		logToDisplay(scan.toString());
+		scan.append("\n");
+		logString.append(scan.toString());
+		
 	}
     
 	/**

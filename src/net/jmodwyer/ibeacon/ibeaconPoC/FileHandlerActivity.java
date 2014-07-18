@@ -95,7 +95,8 @@ public class FileHandlerActivity extends Activity {
 					// itself, rather than mucking around with String representations of paths.
 					File attachment = fileHelper.getFile(selectedItem);
 					i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(attachment));
-					
+					// Reset selectedItem to clear selection
+					selectedItem = null;
 					try {
 						startActivity(Intent.createChooser(i, "Send mail..."));
 					} catch (android.content.ActivityNotFoundException ex) {
@@ -130,7 +131,7 @@ public class FileHandlerActivity extends Activity {
 		   public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		      ListView lv = (ListView) arg0;
 		      TextView tv = (TextView) lv.getChildAt(arg2);
-		      selectedItem = tv.getText().toString();   
+		      selectedItem = tv.getText().toString();
 		   } 
 		});
 	}
