@@ -40,6 +40,9 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
     private IBeaconManager iBeaconManager;
     private Region region; 
     private int eventNum = 1;
+    
+    // This StringBuffer will hold the scan data for any given scan.  
+    private StringBuffer logString;
    
     // Preferences - will actually have a boolean value when loaded.
     private Boolean index;
@@ -103,8 +106,27 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		toggleScanState();
 	}
 	
+ 	// Handle the user selecting "Settings" from the action bar.
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+	    	case R.id.Settings:
+	            // Show settings
+	    		Intent api = new Intent(this, AppPreferenceActivity.class);
+	            startActivityForResult(api, 0);
+	            return true;
+	    	case R.id.action_listfiles:
+	    		// Launch list files activity
+	    		Intent fhi = new Intent(this, FileHandlerActivity.class);
+	            startActivity(fhi);
+	            return true;	    			    		
+	        default:
+	            return super.onOptionsItemSelected(item);
+	     }
+	 }
+	
 	/**
-	 * 
+	 * Start and stop scanning, and toggle button label appropriately.
 	 */
 	private void toggleScanState() {
 		Button scanButton = getScanButton();
@@ -128,8 +150,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		// Reset event counter
 		eventNum = 1;
 		// Get current values for logging preferences
-		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
+		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);		
 	    HashMap <String, Object> prefs = new HashMap<String, Object>();
 	    prefs.putAll(sharedPrefs.getAll());
 	    
@@ -142,6 +163,9 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		timestamp = (Boolean)prefs.get("timestamp"); 
 		
 		logToDisplay("*** New Scan ***");
+		
+		// Initialise scan log
+		logString = new StringBuffer();
 		
 		//Start scanning again.
         iBeaconManager.setRangeNotifier(new RangeNotifier() {
@@ -162,7 +186,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
         } catch (RemoteException e) {   
         	// TODO - OK, what now then?
         }	
-		fileHelper.prepareExternalFile();
+
 	}
 
 	/**
@@ -174,13 +198,22 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		} catch (RemoteException e) {
 				// TODO - OK, what now then?
 		}
-		// Flush location details to a file.
-		fileHelper.closeExternalFile();
-		// Display file created message.
-		Toast.makeText(getBaseContext(),
-				"File saved to:" + getFilesDir().getAbsolutePath(),
-				Toast.LENGTH_SHORT).show();
-		scanButton.setText(MODE_STOPPED);
+		String scanData = logString.toString();
+		if (scanData.length() > 0) {
+			// Write file
+			fileHelper.createFile(scanData);
+			// Display file created message.
+			Toast.makeText(getBaseContext(),
+					"File saved to:" + getFilesDir().getAbsolutePath(),
+					Toast.LENGTH_SHORT).show();
+			scanButton.setText(MODE_STOPPED);
+		} else {
+			// We didn't get any data, so there's no point writing an empty file.
+			Toast.makeText(getBaseContext(),
+					"No data captured during scan, output file will not be created.",
+					Toast.LENGTH_SHORT).show();
+			scanButton.setText(MODE_STOPPED);
+		}
 	}
 
 	/**
@@ -196,7 +229,6 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
      * @param iBeacon
      */
 	private void logBeaconData(IBeacon iBeacon) {
-		StringBuffer logString = new StringBuffer();
 
 		if (index.booleanValue()) {
 			logString.append(eventNum++ + "");
@@ -228,7 +260,6 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 	    
 		logToDisplay(logString.toString());
 		logString.append("\n");
-		fileHelper.writeToExternalFile(logString.toString());
 	}
     
 	/**
@@ -282,24 +313,5 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		}
 		
 	}	  
- 	
- 	// Handle the user selecting "Settings" from the action bar.
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-	    	case R.id.Settings:
-	            // Show settings
-	    		Intent api = new Intent(this, AppPreferenceActivity.class);
-	            startActivityForResult(api, 0);
-	            return true;
-	    	case R.id.action_listfiles:
-	    		// Launch list files activity
-	    		Intent fhi = new Intent(this, FileHandlerActivity.class);
-	            startActivity(fhi);
-	            return true;	    			    		
-	        default:
-	            return super.onOptionsItemSelected(item);
-	     }
-	 }
     
 }

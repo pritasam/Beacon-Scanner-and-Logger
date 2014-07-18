@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >    
+    <!-- Delete Files - will appear as an action button -->
+    <item android:id="@+id/action_deletefiles"
+          android:icon="@drawable/ic_action_remove"
+          android:title="@string/action_deletefiles"
+          android:showAsAction="ifRoom" />
+    <!-- Transfer Files - will appear as an action button -->
+    <item android:id="@+id/action_transferfiles"
+          android:icon="@drawable/ic_action_email"
+          android:title="@string/action_transferfiles"
+          android:showAsAction="ifRoom" />
+</menu>

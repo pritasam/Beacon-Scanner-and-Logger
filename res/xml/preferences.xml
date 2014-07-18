@@ -1,5 +1,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+   <PreferenceCategory android:title="Email address for capture files:" >
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="email"
+            android:summary="Specify the email address you'd like capture files to be sent to"
+            android:title="Destination Email" />
+                                        
+    </PreferenceCategory>
+    
     <PreferenceCategory android:title="Beacon Properties to capture:" >
 
         <CheckBoxPreference
