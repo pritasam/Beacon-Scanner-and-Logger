@@ -1,4 +1,4 @@
-package net.jmodwyer.ibeacon.ibeaconPoC;
+package net.jmodwyer.beacon.beaconPoC;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,6 +23,27 @@ public class BeaconHelper {
 		break;
 		default: proximityString = "Unknown";
 		}
+		return proximityString;
+	}
+	
+	/**
+	 * Converts the Radius Networks beacon proximity value passed in and returns an
+	 * appropriate human readable String.
+	 * @param proximity double value expressing proximity in metres from Radius Networks beacon class
+	 * @return human readable String representing that proximity
+	 */
+	public static String getProximityString(double proximity) {
+		String proximityString;
+		if (proximity == -1.0) {
+			// -1.0 is passed back by the SDK to indicate an unknown distance
+			proximityString = "Unknown";
+		} else if (proximity < 0.5) {
+			proximityString = "Immediate";
+		} else if (proximity < 2.0) {
+				proximityString = "Near";
+		} else {
+			proximityString = "Far";
+		} 
 		return proximityString;
 	}
 	

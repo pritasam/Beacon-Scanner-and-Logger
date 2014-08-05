@@ -1,9 +1,10 @@
-package net.jmodwyer.ibeacon.ibeaconPoC;
+package net.jmodwyer.beacon.beaconPoC;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.jmodwyer.ibeacon.ibeaconPoC.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;

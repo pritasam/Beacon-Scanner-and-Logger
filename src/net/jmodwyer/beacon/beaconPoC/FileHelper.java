@@ -1,7 +1,7 @@
 /**
  * Helper class for dealing with files.
  */
-package net.jmodwyer.ibeacon.ibeaconPoC;
+package net.jmodwyer.beacon.beaconPoC;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -1,9 +1,10 @@
-package net.jmodwyer.ibeacon.ibeaconPoC;
+package net.jmodwyer.beacon.beaconPoC;
 
+import net.jmodwyer.ibeacon.ibeaconPoC.R;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
-public class IBeaconPoCPreferencesFragment extends PreferenceFragment {
+public class BeaconPoCPreferencesFragment extends PreferenceFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

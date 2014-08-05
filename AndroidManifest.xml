@@ -14,13 +14,13 @@
 	<!-- Note that orientation and screenSize are defined in configChanges for the activity defined below,
 	     this is to prevent scanning being stopped when the device is turned on its side. -->
     <application
-        android:name=".BeaconScannerApp"
+        android:name="net.jmodwyer.beacon.beaconPoC.BeaconScannerApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name">
        
         <activity
-            android:name="net.jmodwyer.ibeacon.ibeaconPoC.ScanActivity"
+            android:name="net.jmodwyer.beacon.beaconPoC.ScanActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
@@ -30,7 +30,7 @@
         </activity>
 
         <activity
-            android:name="net.jmodwyer.ibeacon.ibeaconPoC.AppPreferenceActivity"
+            android:name="net.jmodwyer.beacon.beaconPoC.AppPreferenceActivity"
             android:label="@string/app_name" >
             <intent-filter>
 				<action android:name="net.jmodwyer.ibeacon.ibeaconPoC.AppPreferenceActivity" />
@@ -39,9 +39,9 @@
         </activity>        
         
         <activity
-        	android:name="net.jmodwyer.ibeacon.ibeaconPoC.FileHandlerActivity"
+        	android:name="net.jmodwyer.beacon.beaconPoC.FileHandlerActivity"
         	android:label="@string/app_name"
-        	android:parentActivityName="net.jmodwyer.ibeacon.ibeaconPoC.ScanActivity" >
+        	android:parentActivityName="net.jmodwyer.beacon.beaconPoC.ScanActivity" >
         	<!-- Parent activity meta-data to support 4.0 and lower -->
         	<meta-data
             	android:name="android.support.PARENT_ACTIVITY"

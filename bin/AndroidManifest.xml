@@ -7,32 +7,41 @@
 
 	<!-- Note that orientation and screenSize are defined in configChanges for the activity defined below,
 	     this is to prevent scanning being stopped when the device is turned on its side. -->
-    <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:name="net.jmodwyer.ibeacon.ibeaconPoC.BeaconScannerApp">
+    <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:name="net.jmodwyer.beacon.beaconPoC.BeaconScannerApp">
        
-        <activity android:configChanges="orientation|screenSize" android:label="@string/app_name" android:name="net.jmodwyer.ibeacon.ibeaconPoC.ScanActivity">
+        <activity android:configChanges="orientation|screenSize" android:label="@string/app_name" android:name="net.jmodwyer.beacon.beaconPoC.ScanActivity">
             <intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <activity android:label="@string/app_name" android:name="net.jmodwyer.ibeacon.ibeaconPoC.AppPreferenceActivity">
+        <activity android:label="@string/app_name" android:name="net.jmodwyer.beacon.beaconPoC.AppPreferenceActivity">
             <intent-filter>
 				<action android:name="net.jmodwyer.ibeacon.ibeaconPoC.AppPreferenceActivity"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>        
         
-        <activity android:label="@string/app_name" android:name="net.jmodwyer.ibeacon.ibeaconPoC.FileHandlerActivity" android:parentActivityName="net.jmodwyer.ibeacon.ibeaconPoC.ScanActivity">
+        <activity android:label="@string/app_name" android:name="net.jmodwyer.beacon.beaconPoC.FileHandlerActivity" android:parentActivityName="net.jmodwyer.beacon.beaconPoC.ScanActivity">
         	<!-- Parent activity meta-data to support 4.0 and lower -->
         	<meta-data android:name="android.support.PARENT_ACTIVITY" android:value="net.jmodwyer.ibeacon.ibeaconPoC.ScanActivity"/>
     	</activity>
-    <service android:enabled="true" android:exported="true" android:isolatedProcess="false" android:label="iBeacon" android:name="com.radiusnetworks.ibeacon.service.IBeaconService">
+
+    <service android:enabled="true" android:exported="true" android:isolatedProcess="false" android:label="beacon" android:name="org.altbeacon.beacon.service.BeaconService">
     </service>
 
-    <service android:enabled="true" android:name="com.radiusnetworks.ibeacon.IBeaconIntentProcessor">
+    <service android:enabled="true" android:name="org.altbeacon.beacon.BeaconIntentProcessor">
     </service>
+    <receiver android:name="org.altbeacon.beacon.startup.StartupBroadcastReceiver">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+            <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+        </intent-filter>
+    </receiver>
     	
     </application>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
 </manifest>

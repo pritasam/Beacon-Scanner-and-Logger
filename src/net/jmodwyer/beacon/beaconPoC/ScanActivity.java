@@ -1,8 +1,17 @@
-package net.jmodwyer.ibeacon.ibeaconPoC;
+package net.jmodwyer.beacon.beaconPoC;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import net.jmodwyer.ibeacon.ibeaconPoC.R;
+
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.RangeNotifier;
+import org.altbeacon.beacon.Region;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,24 +29,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.radiusnetworks.ibeacon.IBeacon;
-import com.radiusnetworks.ibeacon.IBeaconConsumer;
-import com.radiusnetworks.ibeacon.IBeaconManager;
-import com.radiusnetworks.ibeacon.RangeNotifier;
-import com.radiusnetworks.ibeacon.Region;
-
 /**
  * Adapted from original code written by D Young of Radius Networks.
  * @author dyoung, jodwyer
  *
  */
-public class ScanActivity extends Activity implements IBeaconConsumer {
+public class ScanActivity extends Activity implements BeaconConsumer {
     
 	protected static final String TAG = "ScanActivity";
-    private final String MODE_SCANNING = "Stop Scanning";
-    private final String MODE_STOPPED = "Start Scanning";    
+    private static final String MODE_SCANNING = "Stop Scanning";
+    private static final String MODE_STOPPED = "Start Scanning";
+    
     private FileHelper fileHelper; 
-    private IBeaconManager iBeaconManager;
+    private BeaconManager beaconManager;
     private Region region; 
     private int eventNum = 1;
     
@@ -59,11 +63,16 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		setContentView(R.layout.activity_scan);
 		verifyBluetooth();
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-		iBeaconManager = IBeaconManager.getInstanceForApplication(this);
+		beaconManager = BeaconManager.getInstanceForApplication(this);
 		//iBeaconManager.setForegroundScanPeriod(10);
-		iBeaconManager.bind(this);
+
+		// Add parser for iBeacons;
+        beaconManager.getBeaconParsers().add(new BeaconParser().
+                setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
+		
+		beaconManager.bind(this);
+		
 		region = new Region("myRangingUniqueId", null, null, null);
-		//fileHelper = new FileHelper(getExternalFilesDir(null));
 		BeaconScannerApp app = (BeaconScannerApp)this.getApplication();
 		fileHelper = app.getFileHelper();
 		// Initialise scan button.
@@ -71,21 +80,21 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
     }
     
     @Override 
-    protected void onDestroy() {
-        super.onDestroy();
-        iBeaconManager.unBind(this);
-    }
-    
-    @Override 
     protected void onPause() {
     	super.onPause();
-    	if (iBeaconManager.isBound(this)) iBeaconManager.setBackgroundMode(this, true);    		
+    	if (beaconManager.isBound(this)) beaconManager.setBackgroundMode(true);    		
     }
     
     @Override 
     protected void onResume() {
     	super.onResume();
-    	if (iBeaconManager.isBound(this)) iBeaconManager.setBackgroundMode(this, false);    		
+    	if (beaconManager.isBound(this)) beaconManager.setBackgroundMode(false);    		
+    }
+    
+    @Override 
+    protected void onDestroy() {
+        super.onDestroy();
+        beaconManager.unbind(this);
     }
     
     @Override
@@ -96,7 +105,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
     }
 
     @Override
-    public void onIBeaconServiceConnect() {}
+    public void onBeaconServiceConnect() {}
     
     /**
      * 
@@ -168,21 +177,21 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		logString = new StringBuffer();
 		
 		//Start scanning again.
-        iBeaconManager.setRangeNotifier(new RangeNotifier() {
+        beaconManager.setRangeNotifier(new RangeNotifier() {
         	@Override 
-        	public void didRangeBeaconsInRegion(Collection<IBeacon> iBeacons, Region region) {
-        		if (iBeacons.size() > 0) {
-        			Iterator <IBeacon> beaconIterator = iBeacons.iterator();
+        	public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+        		if (beacons.size() > 0) {
+        			Iterator <Beacon> beaconIterator = beacons.iterator();
         			while (beaconIterator.hasNext()) {
-        				IBeacon iBeacon = beaconIterator.next();
-        				logBeaconData(iBeacon);
+        				Beacon beacon = beaconIterator.next();
+        				logBeaconData(beacon);
         			}
         		}
         	}
         });
 
         try {
-            iBeaconManager.startRangingBeaconsInRegion(region);
+            beaconManager.startRangingBeaconsInRegion(region);
         } catch (RemoteException e) {   
         	// TODO - OK, what now then?
         }	
@@ -194,7 +203,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 	 */
 	private void stopScanning(Button scanButton) {
 		try {
-			iBeaconManager.stopRangingBeaconsInRegion(region);
+			beaconManager.stopRangingBeaconsInRegion(region);
 		} catch (RemoteException e) {
 				// TODO - OK, what now then?
 		}
@@ -228,7 +237,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
      * 
      * @param iBeacon
      */
-	private void logBeaconData(IBeacon iBeacon) {
+	private void logBeaconData(Beacon beacon) {
 
 		StringBuffer scan = new StringBuffer();
 		
@@ -237,23 +246,23 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
 		}				
 		
 		if (uuid.booleanValue()) {
-			scan.append(" UUID: " + iBeacon.getProximityUuid());
+			scan.append(" UUID: " + beacon.getId1());
 		}		
 		
 		if (majorMinor.booleanValue()) {
-			scan.append(" Maj. Mnr.: " + iBeacon.getMajor() + "-" + iBeacon.getMinor());
+			scan.append(" Maj. Mnr.: " + beacon.getId2() + "-" + beacon.getId3());
 		}
 		
 		if (rssi.booleanValue()) {
-			scan.append(" RSSI: " + iBeacon.getRssi());
+			scan.append(" RSSI: " + beacon.getRssi());
 		}
 				
 		if (proximity.booleanValue()) {
-			scan.append(" Proximity: " + BeaconHelper.getProximityString(iBeacon.getProximity()));
+			scan.append(" Proximity: " + BeaconHelper.getProximityString(beacon.getDistance()));
 		}
 		
 		if (power.booleanValue()) {
-			scan.append(" Power: "+ iBeacon.getTxPower());
+			scan.append(" Power: "+ beacon.getTxPower());
 		}
 		
 		if (timestamp.booleanValue()) {
@@ -283,7 +292,7 @@ public class ScanActivity extends Activity implements IBeaconConsumer {
  	private void verifyBluetooth() {
 
 		try {
-			if (!IBeaconManager.getInstanceForApplication(this).checkAvailability()) {
+			if (!BeaconManager.getInstanceForApplication(this).checkAvailability()) {
 				final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setTitle("Bluetooth not enabled");			
 				builder.setMessage("Please enable bluetooth in settings and restart this application.");

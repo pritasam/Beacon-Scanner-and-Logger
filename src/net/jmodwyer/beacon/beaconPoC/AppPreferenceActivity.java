@@ -1,4 +1,4 @@
-package net.jmodwyer.ibeacon.ibeaconPoC;
+package net.jmodwyer.beacon.beaconPoC;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ public class AppPreferenceActivity extends Activity {
 	 public void onCreate(Bundle savedInstanceState) {
 		 super.onCreate(savedInstanceState);
 		  			getFragmentManager().beginTransaction().replace(android.R.id.content,
-		                new IBeaconPoCPreferencesFragment()).commit();
+		                new BeaconPoCPreferencesFragment()).commit();
 	}
 
 }
