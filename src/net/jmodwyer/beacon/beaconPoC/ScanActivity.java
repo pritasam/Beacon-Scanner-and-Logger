@@ -36,9 +36,18 @@ import android.widget.Toast;
  */
 public class ScanActivity extends Activity implements BeaconConsumer {
     
-	protected static final String TAG = "ScanActivity";
+	// Constant Declaration
+	private static final String PREFERENCE_SCANINTERVAL = "scanInterval";
+	private static final String PREFERENCE_TIMESTAMP = "timestamp";
+	private static final String PREFERENCE_POWER = "power";
+	private static final String PREFERENCE_PROXIMITY = "proximity";
+	private static final String PREFERENCE_RSSI = "rssi";
+	private static final String PREFERENCE_MAJORMINOR = "majorMinor";
+	private static final String PREFERENCE_UUID = "uuid";
+	private static final String PREFERENCE_INDEX = "index";
     private static final String MODE_SCANNING = "Stop Scanning";
     private static final String MODE_STOPPED = "Start Scanning";
+    protected static final String TAG = "ScanActivity";
     
     private FileHelper fileHelper; 
     private BeaconManager beaconManager;
@@ -56,6 +65,7 @@ public class ScanActivity extends Activity implements BeaconConsumer {
 	private Boolean proximity;
 	private Boolean power;
 	private Boolean timestamp;
+	private String scanInterval;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,38 +73,20 @@ public class ScanActivity extends Activity implements BeaconConsumer {
 		setContentView(R.layout.activity_scan);
 		verifyBluetooth();
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-		beaconManager = BeaconManager.getInstanceForApplication(this);
-		//iBeaconManager.setForegroundScanPeriod(10);
+		BeaconScannerApp app = (BeaconScannerApp)this.getApplication();
+		beaconManager = app.getBeaconManager();
+		//beaconManager.setForegroundScanPeriod(10);
 
 		// Add parser for iBeacons;
         beaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
-		
 		beaconManager.bind(this);
 		
 		region = new Region("myRangingUniqueId", null, null, null);
-		BeaconScannerApp app = (BeaconScannerApp)this.getApplication();
+
 		fileHelper = app.getFileHelper();
 		// Initialise scan button.
 		getScanButton().setText(MODE_STOPPED);
-    }
-    
-    @Override 
-    protected void onPause() {
-    	super.onPause();
-    	if (beaconManager.isBound(this)) beaconManager.setBackgroundMode(true);    		
-    }
-    
-    @Override 
-    protected void onResume() {
-    	super.onResume();
-    	if (beaconManager.isBound(this)) beaconManager.setBackgroundMode(false);    		
-    }
-    
-    @Override 
-    protected void onDestroy() {
-        super.onDestroy();
-        beaconManager.unbind(this);
     }
     
     @Override
@@ -163,13 +155,19 @@ public class ScanActivity extends Activity implements BeaconConsumer {
 	    HashMap <String, Object> prefs = new HashMap<String, Object>();
 	    prefs.putAll(sharedPrefs.getAll());
 	    
-	    index = (Boolean)prefs.get("index");
-	    uuid = (Boolean)prefs.get("uuid");
-		majorMinor = (Boolean)prefs.get("majorMinor");
-		rssi = (Boolean)prefs.get("rssi"); 
-		proximity = (Boolean)prefs.get("proximity");
-		power = (Boolean)prefs.get("power");
-		timestamp = (Boolean)prefs.get("timestamp"); 
+	    index = (Boolean)prefs.get(PREFERENCE_INDEX);
+	    uuid = (Boolean)prefs.get(PREFERENCE_UUID);
+		majorMinor = (Boolean)prefs.get(PREFERENCE_MAJORMINOR);
+		rssi = (Boolean)prefs.get(PREFERENCE_RSSI); 
+		proximity = (Boolean)prefs.get(PREFERENCE_PROXIMITY);
+		power = (Boolean)prefs.get(PREFERENCE_POWER);
+		timestamp = (Boolean)prefs.get(PREFERENCE_TIMESTAMP);
+		scanInterval = (String)prefs.get(PREFERENCE_SCANINTERVAL);
+		
+		// Get current background scan interval (if specified)
+		if (prefs.get(PREFERENCE_SCANINTERVAL) != null) {
+			beaconManager.setBackgroundBetweenScanPeriod(Long.parseLong(scanInterval));
+		}
 		
 		logToDisplay("Scanning...");
 		

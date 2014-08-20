@@ -8,6 +8,10 @@
 package net.jmodwyer.ibeacon.ibeaconPoC;
 
 public final class R {
+    public static final class array {
+        public static final int IntervalLabels=0x7f050000;
+        public static final int IntervalValues=0x7f050001;
+    }
     public static final class attr {
     }
     public static final class drawable {
@@ -17,14 +21,14 @@ public final class R {
         public static final int ic_launcher=0x7f020003;
     }
     public static final class id {
-        public static final int Settings=0x7f080007;
-        public static final int action_deletefiles=0x7f080004;
-        public static final int action_listfiles=0x7f080006;
-        public static final int action_transferfiles=0x7f080005;
-        public static final int editText1=0x7f080001;
-        public static final int listview=0x7f080000;
-        public static final int scanButton=0x7f080003;
-        public static final int scanText=0x7f080002;
+        public static final int Settings=0x7f090007;
+        public static final int action_deletefiles=0x7f090004;
+        public static final int action_listfiles=0x7f090006;
+        public static final int action_transferfiles=0x7f090005;
+        public static final int editText1=0x7f090001;
+        public static final int listview=0x7f090000;
+        public static final int scanButton=0x7f090003;
+        public static final int scanText=0x7f090002;
     }
     public static final class layout {
         public static final int activity_filelist=0x7f030000;
@@ -32,16 +36,16 @@ public final class R {
         public static final int file_list_item=0x7f030002;
     }
     public static final class menu {
-        public static final int listfiles_activity_actions=0x7f070000;
-        public static final int main_activity_actions=0x7f070001;
+        public static final int listfiles_activity_actions=0x7f080000;
+        public static final int main_activity_actions=0x7f080001;
     }
     public static final class string {
-        public static final int Settings=0x7f050002;
-        public static final int action_deletefiles=0x7f050004;
-        public static final int action_listfiles=0x7f050003;
-        public static final int action_transferfiles=0x7f050005;
-        public static final int app_name=0x7f050000;
-        public static final int click_the_button_to_start_or_stop_scanning=0x7f050001;
+        public static final int Settings=0x7f060002;
+        public static final int action_deletefiles=0x7f060004;
+        public static final int action_listfiles=0x7f060003;
+        public static final int action_transferfiles=0x7f060005;
+        public static final int app_name=0x7f060000;
+        public static final int click_the_button_to_start_or_stop_scanning=0x7f060001;
     }
     public static final class style {
         /** 
@@ -65,11 +69,11 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f060000;
+        public static final int AppBaseTheme=0x7f070000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f060001;
+        public static final int AppTheme=0x7f070001;
     }
     public static final class xml {
         public static final int preferences=0x7f040000;

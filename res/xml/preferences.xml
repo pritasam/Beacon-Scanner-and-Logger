@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-   <PreferenceCategory android:title="Email address for capture files:" >
+   <PreferenceCategory android:title="Email Address for Capture Files:" >
 
         <EditTextPreference
             android:defaultValue=""
@@ -8,6 +8,17 @@
             android:summary="Specify the email address you'd like capture files to be sent to"
             android:title="Destination Email" />
                                         
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Background Scanning:" >
+                                        
+        <ListPreference 
+    		android:key="scanInterval"
+    		android:title="Scanning Interval"
+    		android:summary="Specify the interval between background scans in seconds (5 minutes if no value specified)"
+    		android:entries="@array/IntervalLabels"
+    		android:entryValues="@array/IntervalValues"/>
+        
     </PreferenceCategory>
     
     <PreferenceCategory android:title="Beacon Properties to capture:" >
