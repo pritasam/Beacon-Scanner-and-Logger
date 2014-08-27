@@ -7,4 +7,6 @@ The app scans for Beacons and writes the details of any Beacons discovered to a 
 
 Scanning can be enabled and disabled via a button and the file produced will overwrite any previous versions of the same file.
 
-Currently uses the free iBeacon SDK from Radius Networks and portions of code adapted from David G Young's IBeacon Reference Application. Will be updated to use the open source AltBeacons based library. 
+Currently uses the free Android Beacon SDK from Radius Networks and portions of code adapted from David G Young's IBeacon Reference Application.
+
+A pre-compiled version of the app is available for download via Google Play: https://play.google.com/store/apps/details?id=net.jmodwyer.ibeacon.ibeaconPoC
